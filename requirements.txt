@@ -43,3 +43,5 @@ urllib3==2.5.0
 uv==0.8.12
 whitenoise==6.9.0
 zope.interface==7.2
+channels_redis==4.3.0 
+msgpack==1.1.1 
