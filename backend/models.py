@@ -14,6 +14,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,)
     role = models.CharField(max_length=20, choices=Role.choices)
 
+    def __str__(self):
+        return self.user.username
+
 class Labour(models.Model):
     id=models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)

@@ -37,31 +37,42 @@ mqtt_process = None
 @require_http_methods(["POST"])
 def start_mqtt_listener(request):
     global mqtt_process
-    
     try:
+        body = json.loads(request.body.decode("utf-8"))
+        task_id = body.get("task_id")
+
+        if not task_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'task_id is required'
+            })
+
         if mqtt_process and mqtt_process.poll() is None:
             return JsonResponse({
                 'status': 'error',
                 'message': 'MQTT listener is already running',
                 'pid': mqtt_process.pid
             })
-        
-        # Start the MQTT listener as a subprocess
+            
+
         mqtt_process = subprocess.Popen([
-            'python', 'manage.py', 'run_mqtt_listener'
+            'python', 'manage.py', 'run_mqtt_listener', '--task_id', task_id
         ], cwd=os.getcwd())
-        
+        print(mqtt_process.pid)
+        print(task_id)
+
         return JsonResponse({
             'status': 'success',
             'message': 'MQTT listener started successfully',
             'pid': mqtt_process.pid
         })
-        
+
     except Exception as e:
         return JsonResponse({
             'status': 'error',
             'message': f'Failed to start MQTT listener: {str(e)}'
         })
+
 
 @csrf_exempt
 @require_http_methods(["POST"])
