@@ -1,9 +1,9 @@
 # core/views.py
 from rest_framework import viewsets
 from .models import Labour, Stock, UserProfile, Task, Parchi
-from .serializers import LabourSerializer, StockSerializer, UserProfileSerializer, TaskSerializer, ParchiSerializer
+from .serializers import LabourSerializer, StockSerializer, UserProfileSerializer, TaskSerializer, ParchiSerializer, mqtt_updated_data
 import subprocess
-import signal
+from rest_framework.views import APIView
 import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -123,3 +123,14 @@ def mqtt_listener_status(request):
         'status': status,
         'pid': pid
     })
+
+
+def live_update(request): 
+    if request.method == 'GET':
+        id=request.GET.get('task_id')
+        if not id:
+            return JsonResponse({'error': 'Task ID is required'}, status=400)
+        task=Task.objects.get(id=id)
+        if not task:
+            return JsonResponse({'error': 'Task not found'}, status=404)
+        return JsonResponse(mqtt_updated_data(Task.objects.get(id=id)).data, safe=False)

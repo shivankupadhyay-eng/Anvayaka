@@ -12,8 +12,8 @@ class StockSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ParchiSerializer(serializers.ModelSerializer):
-    task=serializers.StringRelatedField()
-    labour=serializers.StringRelatedField()
+    task=serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+    labour = serializers.PrimaryKeyRelatedField(queryset=Labour.objects.all())   
     class Meta:
         model = Parchi
         fields = ['id', 'task', 'labour', 'details', 'deliverable', 'deadline']
@@ -28,3 +28,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = '__all__'
+
+class mqtt_updated_data(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id','completed_quantity']

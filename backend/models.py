@@ -57,7 +57,7 @@ class Task(models.Model):
     due_date = models.DateField()
     labour = models.ForeignKey(Labour, related_name='assigned_tasks', on_delete=models.SET_NULL, null=True)  # Owner assigns
     thekedar = models.ForeignKey(UserProfile, related_name='owned_tasks', on_delete=models.SET_NULL, null=True)  # Assigned to thekedar
-    stocks = models.ManyToManyField(Stock, related_name='tasks', blank=False)  # Stocks provided for this task
+    stocks = models.ManyToManyField(Stock, related_name='tasks', blank=True)  # Stocks provided for this task
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
