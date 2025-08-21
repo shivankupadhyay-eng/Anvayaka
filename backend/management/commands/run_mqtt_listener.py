@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 import paho.mqtt.client as mqtt
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from backend.models import Task
+from backend.models import Task, TemperatureReading
 
 class Command(BaseCommand):
     help = 'Run MQTT listener for sensor data'
@@ -31,7 +31,9 @@ class Command(BaseCommand):
             print(task_id)
             try:
                 if msg.topic == "emqx/esp32/temperature":
-                    data = {'type': 'temperature', 'value': float(msg.payload.decode())}
+                    temperature_value=float(msg.payload.decode())
+                    data={"type": "temperature", "value": temperature_value}
+                    TemperatureReading.objects.create(temperature=temperature_value)
 
                 elif msg.topic == "emqx/esp32/item":
                     new_item_value = int(msg.payload.decode())
@@ -45,6 +47,7 @@ class Command(BaseCommand):
                         
                         task.completed_quantity += new_item_value
                         if int(task.completed_quantity) == int(task.quantity):
+                            client.disconnect()
                             return
                         else:
                             task.save()

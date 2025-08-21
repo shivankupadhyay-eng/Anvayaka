@@ -82,3 +82,13 @@ class Parchi(models.Model):
 
     def __str__(self):
         return f"Parchi for {self.labour.name} on {self.task.name}"
+
+class TemperatureReading(models.Model):
+    temperature = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+        
+    def __str__(self):
+        return f"{self.temperature}"

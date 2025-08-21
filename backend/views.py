@@ -1,6 +1,6 @@
 # core/views.py
 from rest_framework import viewsets
-from .models import Labour, Stock, UserProfile, Task, Parchi
+from .models import Labour, Stock, UserProfile, Task, Parchi, TemperatureReading
 from .serializers import LabourSerializer, StockSerializer, UserProfileSerializer, TaskSerializer, ParchiSerializer, mqtt_updated_data
 import subprocess
 from rest_framework.views import APIView
@@ -134,3 +134,15 @@ def live_update(request):
         if not task:
             return JsonResponse({'error': 'Task not found'}, status=404)
         return JsonResponse(mqtt_updated_data(Task.objects.get(id=id)).data, safe=False)
+    
+def get_latest_temperature(request):
+    if request.method == 'GET':
+        latest_temp = TemperatureReading.objects.first()
+        
+        if latest_temp:
+            return JsonResponse({
+                'temperature': latest_temp.temperature,
+                'timestamp': latest_temp.timestamp.isoformat()
+            })
+        else:
+            return JsonResponse({'temperature': None, 'timestamp': None})

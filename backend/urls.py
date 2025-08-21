@@ -2,7 +2,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from . import views
-from .views import LabourViewSet, StockViewSet, UserProfileViewSet, TaskViewSet, ParchiViewSet,live_update
+from .views import LabourViewSet, StockViewSet, UserProfileViewSet, TaskViewSet, ParchiViewSet,live_update,get_latest_temperature
 
 router = routers.DefaultRouter()
 router.register('labour', LabourViewSet)
@@ -16,5 +16,6 @@ urlpatterns = [
     path('mqtt/start/', views.start_mqtt_listener, name='start_mqtt'),
     path('mqtt/stop/', views.stop_mqtt_listener, name='stop_mqtt'),
     path('mqtt/status/', views.mqtt_listener_status, name='mqtt_status'),
-    path("live_update/",views.live_update,name="live_update")
+    path("live_update/",views.live_update,name="live_update"),
+    path("get_latest_temperature/",views.get_latest_temperature,name="get_latest_temperature")
 ]
